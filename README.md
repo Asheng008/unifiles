@@ -1,0 +1,194 @@
+# unifiles
+
+统一的文件操作库，为多种常见文件类型提供一致的读写、抽取与查询接口，简化 Python 中的日常文件处理。
+
+## 特性
+
+- **统一接口**：不同文件类型使用一致的 API 设计，降低学习成本
+- **模块化**：按文件类型分模块，可单独导入使用
+- **类型安全**：完整类型注解（Python 3.9+），支持静态检查
+- **易于扩展**：便于增加新的文件类型支持
+
+## 支持的文件类型
+
+| 类型       | 扩展名          | 功能说明                     | 状态   |
+|------------|-----------------|------------------------------|--------|
+| Excel      | `.xlsx`, `.xls` | 读取、写入、获取工作表名称   | 已实现 |
+| PDF        | `.pdf`          | 提取文本、提取表格（基础）   | 待实现 |
+| Word       | `.docx`         | 读取、写入                    | 待实现 |
+| SQLite     | `.db`, `.sqlite`| 执行查询、获取表结构、获取表名| 待实现 |
+
+> **说明**：PDF 表格抽取将基于 `pypdf`，仅适合基础表格；复杂版式、多列、合并单元格等可能不准，后续版本会评估引入 `pdfplumber` 等方案。
+
+## 环境要求
+
+- **Python**：3.9+（推荐 3.10+）
+- **操作系统**：Windows 10+、主流 Linux、macOS 10.14+
+
+## 安装
+
+从源码安装（开发模式，含测试与类型检查等依赖）：
+
+```powershell
+git clone https://github.com/your-org/unifiles.git
+cd unifiles
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -e ".[dev]"
+```
+
+仅安装运行依赖：
+
+```powershell
+pip install -e .
+```
+
+若已发布到 PyPI：
+
+```bash
+pip install unifiles
+```
+
+## 快速开始
+
+### Excel（已实现）
+
+```python
+import unifiles
+
+# 读取
+df = unifiles.read_excel("data.xlsx", sheet_name="Sheet1")
+
+# 获取所有工作表名称
+sheets = unifiles.get_sheet_names("data.xlsx")
+
+# 写入（覆盖整个文件）
+unifiles.write_excel(df, "output.xlsx", sheet_name="Results")
+
+# 多工作表写入
+unifiles.write_excel({"Sheet1": df1, "Sheet2": df2}, "output.xlsx")
+```
+
+### PDF（待实现）
+
+```python
+import unifiles
+
+# 提取全文
+text = unifiles.extract_text("document.pdf")
+
+# 提取指定页
+text = unifiles.extract_text("document.pdf", page_range=(1, 5))
+
+# 提取表格（基础表格）
+tables = unifiles.extract_tables("document.pdf", page_range=(1, 5))
+```
+
+### Word（待实现）
+
+```python
+import unifiles
+
+# 读取
+content = unifiles.read_docx("document.docx")
+
+# 写入
+unifiles.write_docx("Hello World", "output.docx", title="My Document")
+```
+
+### SQLite（待实现）
+
+```python
+import unifiles
+
+# 查询
+df = unifiles.query("database.db", "SELECT * FROM users WHERE age > ?", (18,))
+
+# 表结构
+schema = unifiles.get_schema("database.db", "users")
+
+# 表名列表
+tables = unifiles.get_tables("database.db")
+```
+
+## API 概览
+
+| 模块   | 函数 | 说明                         | 状态   |
+|--------|------|------------------------------|--------|
+| Excel  | `read_excel(file_path, sheet_name=None)` | 读取为 DataFrame | 已实现 |
+| Excel  | `write_excel(data, file_path, sheet_name="Sheet1")` | 写入（覆盖整个文件） | 已实现 |
+| Excel  | `get_sheet_names(file_path)` | 返回工作表名称列表 | 已实现 |
+| PDF    | `extract_text(file_path, page_range=None)` | 提取文本 | 待实现 |
+| PDF    | `extract_tables(file_path, page_range=None)` | 提取表格列表 | 待实现 |
+| Word   | `read_docx(file_path)` | 读取为字符串 | 待实现 |
+| Word   | `write_docx(content, file_path, title=None)` | 写入文档 | 待实现 |
+| SQLite | `query(db_path, sql, params=None)` | 执行 SQL，返回 DataFrame | 待实现 |
+| SQLite | `get_schema(db_path, table_name)` | 返回字段名到类型的映射 | 待实现 |
+| SQLite | `get_tables(db_path)` | 返回表名列表 | 待实现 |
+
+导入方式示例：
+
+```python
+import unifiles
+df = unifiles.read_excel("data.xlsx")
+
+# 或按需导入（当前已提供 Excel 与异常类）
+from unifiles import read_excel, write_excel, get_sheet_names
+from unifiles import UnifilesError, FileFormatError, FileReadError, FileWriteError
+```
+
+## 项目结构
+
+```
+unifiles/
+├── .cursor/              # Cursor 相关配置（可选）
+├── .gitignore
+├── pyproject.toml        # 项目配置与依赖
+├── README.md
+├── TECH_REQUIREMENTS.md # 技术需求
+├── DEVELOPMENT_PLAN.md  # 开发计划
+├── AGENTS.md            # 开发规范（面向 AI/协作）
+├── src/
+│   └── unifiles/
+│       ├── __init__.py
+│       ├── exceptions.py
+│       ├── excel.py     # 已实现
+│       ├── pdf.py       # 待实现
+│       ├── word.py      # 待实现
+│       └── sqlite.py    # 待实现
+└── tests/
+    ├── __init__.py
+    ├── test_excel.py
+    └── fixtures/
+        └── test_files/  # 测试用示例文件
+```
+
+## 开发与贡献
+
+- 开发规范、类型注解与测试要求见 [AGENTS.md](AGENTS.md)
+- 功能与接口设计见 [TECH_REQUIREMENTS.md](TECH_REQUIREMENTS.md)
+- 阶段与任务安排见 [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md)
+
+本地开发建议步骤（Windows PowerShell）：
+
+```powershell
+# 创建并激活虚拟环境
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+
+# 安装为可编辑包及开发依赖
+pip install -e ".[dev]"
+
+# 运行测试
+pytest tests/ -v
+
+# 类型检查
+mypy src/unifiles/
+
+# 代码格式化
+black src/ tests/
+```
+
+## 许可证
+
+采用 MIT 或 Apache 2.0 许可证（具体以仓库声明为准）。
