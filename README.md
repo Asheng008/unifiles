@@ -13,10 +13,10 @@
 
 | 类型       | 扩展名          | 功能说明                     | 状态   |
 |------------|-----------------|------------------------------|--------|
-| Excel      | `.xlsx`, `.xls` | 读取、写入、获取工作表名称   | 已实现 |
-| PDF        | `.pdf`          | 提取文本、提取表格（基础）   | 待实现 |
-| Word       | `.docx`         | 读取、写入                    | 待实现 |
-| SQLite     | `.db`, `.sqlite`| 执行查询、获取表结构、获取表名| 待实现 |
+| Excel      | `.xlsx`, `.xls` | 读取、写入、获取工作表名称   | ✅ 已实现 |
+| PDF        | `.pdf`          | 提取文本、提取表格（基础）   | ✅ 已实现 |
+| Word       | `.docx`         | 读取、写入                    | ✅ 已实现 |
+| SQLite     | `.db`, `.sqlite`| 执行查询、获取表结构、获取表名| ✅ 已实现 |
 
 > **说明**：PDF 表格抽取将基于 `pypdf`，仅适合基础表格；复杂版式、多列、合并单元格等可能不准，后续版本会评估引入 `pdfplumber` 等方案。
 
@@ -30,7 +30,7 @@
 从源码安装（开发模式，含测试与类型检查等依赖）：
 
 ```powershell
-git clone https://github.com/your-org/unifiles.git
+git clone https://github.com/Asheng008/unifiles.git
 cd unifiles
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
@@ -41,6 +41,12 @@ pip install -e ".[dev]"
 
 ```powershell
 pip install -e .
+```
+
+使用依赖锁文件安装（推荐用于生产环境）：
+
+```powershell
+pip install -r requirements.txt
 ```
 
 若已发布到 PyPI：
@@ -69,7 +75,7 @@ unifiles.write_excel(df, "output.xlsx", sheet_name="Results")
 unifiles.write_excel({"Sheet1": df1, "Sheet2": df2}, "output.xlsx")
 ```
 
-### PDF（待实现）
+### PDF（已实现）
 
 ```python
 import unifiles
@@ -77,54 +83,66 @@ import unifiles
 # 提取全文
 text = unifiles.extract_text("document.pdf")
 
-# 提取指定页
+# 提取指定页（1-based，从第 1 页开始）
 text = unifiles.extract_text("document.pdf", page_range=(1, 5))
 
-# 提取表格（基础表格）
+# 提取表格（基础表格，MVP 限制：复杂布局可能识别不准）
 tables = unifiles.extract_tables("document.pdf", page_range=(1, 5))
+for table in tables:
+    print(table)
 ```
 
-### Word（待实现）
+### Word（已实现）
 
 ```python
 import unifiles
 
 # 读取
 content = unifiles.read_docx("document.docx")
+print(content)
 
 # 写入
 unifiles.write_docx("Hello World", "output.docx", title="My Document")
+
+# 写入多行内容
+content = "第一行\n第二行\n第三行"
+unifiles.write_docx(content, "output.docx", title="多行文档")
 ```
 
-### SQLite（待实现）
+### SQLite（已实现）
 
 ```python
 import unifiles
 
-# 查询
+# 查询（支持参数化查询）
 df = unifiles.query("database.db", "SELECT * FROM users WHERE age > ?", (18,))
 
-# 表结构
-schema = unifiles.get_schema("database.db", "users")
+# 使用字典参数化查询
+df = unifiles.query("database.db", "SELECT * FROM users WHERE age > :age", {"age": 18})
 
-# 表名列表
+# 获取表结构
+schema = unifiles.get_schema("database.db", "users")
+print(schema)  # {'id': 'INTEGER', 'name': 'TEXT', 'age': 'INTEGER'}
+
+# 获取表名列表
 tables = unifiles.get_tables("database.db")
+print(tables)  # ['users', 'products', 'orders']
 ```
 
 ## API 概览
 
 | 模块   | 函数 | 说明                         | 状态   |
 |--------|------|------------------------------|--------|
-| Excel  | `read_excel(file_path, sheet_name=None)` | 读取为 DataFrame | 已实现 |
-| Excel  | `write_excel(data, file_path, sheet_name="Sheet1")` | 写入（覆盖整个文件） | 已实现 |
-| Excel  | `get_sheet_names(file_path)` | 返回工作表名称列表 | 已实现 |
-| PDF    | `extract_text(file_path, page_range=None)` | 提取文本 | 待实现 |
-| PDF    | `extract_tables(file_path, page_range=None)` | 提取表格列表 | 待实现 |
-| Word   | `read_docx(file_path)` | 读取为字符串 | 待实现 |
-| Word   | `write_docx(content, file_path, title=None)` | 写入文档 | 待实现 |
-| SQLite | `query(db_path, sql, params=None)` | 执行 SQL，返回 DataFrame | 待实现 |
-| SQLite | `get_schema(db_path, table_name)` | 返回字段名到类型的映射 | 待实现 |
-| SQLite | `get_tables(db_path)` | 返回表名列表 | 待实现 |
+| Excel  | `read_excel(file_path, sheet_name=None)` | 读取为 DataFrame | ✅ 已实现 |
+| Excel  | `write_excel(data, file_path, sheet_name="Sheet1")` | 写入（覆盖整个文件） | ✅ 已实现 |
+| Excel  | `get_sheet_names(file_path)` | 返回工作表名称列表 | ✅ 已实现 |
+| PDF    | `extract_text(file_path, page_range=None)` | 提取文本 | ✅ 已实现 |
+| PDF    | `extract_tables(file_path, page_range=None)` | 提取表格列表（MVP：基础表格） | ✅ 已实现 |
+| Word   | `read_docx(file_path)` | 读取为字符串 | ✅ 已实现 |
+| Word   | `write_docx(content, file_path, title=None)` | 写入文档 | ✅ 已实现 |
+| SQLite | `query(db_path, sql, params=None)` | 执行 SQL，返回 DataFrame | ✅ 已实现 |
+| SQLite | `get_schema(db_path, table_name)` | 返回字段名到类型的映射 | ✅ 已实现 |
+| SQLite | `get_tables(db_path)` | 返回表名列表 | ✅ 已实现 |
 
 导入方式示例：
 
@@ -132,9 +150,25 @@ tables = unifiles.get_tables("database.db")
 import unifiles
 df = unifiles.read_excel("data.xlsx")
 
-# 或按需导入（当前已提供 Excel 与异常类）
-from unifiles import read_excel, write_excel, get_sheet_names
-from unifiles import UnifilesError, FileFormatError, FileReadError, FileWriteError
+# 或按需导入
+from unifiles import (
+    read_excel,
+    write_excel,
+    get_sheet_names,
+    read_docx,
+    write_docx,
+    extract_text,
+    extract_tables,
+    query,
+    get_schema,
+    get_tables,
+)
+from unifiles import (
+    UnifilesError,
+    FileFormatError,
+    FileReadError,
+    FileWriteError,
+)
 ```
 
 ## 项目结构
@@ -152,10 +186,10 @@ unifiles/
 │   └── unifiles/
 │       ├── __init__.py
 │       ├── exceptions.py
-│       ├── excel.py     # 已实现
-│       ├── pdf.py       # 待实现
-│       ├── word.py      # 待实现
-│       └── sqlite.py    # 待实现
+│       ├── excel.py     # ✅ 已实现
+│       ├── pdf.py       # ✅ 已实现
+│       ├── word.py      # ✅ 已实现
+│       └── sqlite.py    # ✅ 已实现
 └── tests/
     ├── __init__.py
     ├── test_excel.py
@@ -189,6 +223,12 @@ mypy src/unifiles/
 black src/ tests/
 ```
 
+## 作者与维护者
+
+- **作者**：Asheng (`w62745@qq.com`)
+- **仓库**：<https://github.com/Asheng008/unifiles>
+- 欢迎通过 Issues 或 Pull Request 参与贡献。
+
 ## 许可证
 
-采用 MIT 或 Apache 2.0 许可证（具体以仓库声明为准）。
+本项目采用 [MIT License](./LICENSE)。

@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.9"
 license = {text = "MIT"}
 authors = [
-    {name = "unifiles contributors"}
+    {name = "Asheng", email = "w62745@qq.com"}
 ]
 keywords = ["file", "excel", "pdf", "word", "sqlite", "data-processing"]
 classifiers = [
@@ -43,10 +43,10 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/yourusername/unifiles"
-Documentation = "https://github.com/yourusername/unifiles"
-Repository = "https://github.com/yourusername/unifiles"
-Issues = "https://github.com/yourusername/unifiles/issues"
+Homepage = "https://github.com/Asheng008/unifiles"
+Documentation = "https://github.com/Asheng008/unifiles"
+Repository = "https://github.com/Asheng008/unifiles"
+Issues = "https://github.com/Asheng008/unifiles/issues"
 
 [tool.setuptools]
 package-dir = {"" = "src"}

@@ -61,6 +61,106 @@
 
 ---
 
+## 测试与工程配置
+
+### 15. 修改 HISTORY.md 标题为当前对话简短描述
+> @HISTORY.md:7 这个要改下，标题为当前对话的简短描述，因为到时还要添加其他轮次对话
+
+### 16. 为 HISTORY.md 编写 Cursor 命令以更新文档
+> @HISTORY.md 写个 cursor的 command 用来更新history.md文档，不清楚怎么写的话，可以联网查一下，或参考cursor官方文档
+
+### 17. 询问 pytest 中 tmp_path 的来源
+> @tests/test_excel.py:14 这里的tmp_path 是在哪个地方
+
+### 18. 询问测试文件是否只能用 pytest 运行
+> 所以这些测试文件 @tests/test_excel.py 只能用pytest来测试，我们自己不可以直接运行?
+
+### 19. 询问 tests/fixtures 是否需要加入 .gitignore
+> tests/fixtures 是否需要添加到 .gitignore 里面去
+
+### 20. 询问 tests\\fixtures\\test_files 目录是否需要加入 .gitignore
+> tests\\fixtures\\test_files 这个文件夹是否需要添加到 .gitignore 里面去
+
+### 21. 运行 /update-history 命令
+> /update-history
+
+---
+
+## 阶段实现与命令扩展
+
+### 22. 规划当前可实现的开发阶段
+> @DEVELOPMENT_PLAN.md:456-466 你现在规划一下，开始写代码，当前阶段比较多，你根据自己的能力看一下，现在能完成哪几个阶段，不要求一次写完
+
+### 23. 按计划实现阶段 1 和阶段 2
+> Implement the plan as specified, it is attached for your reference. Do NOT edit the plan file itself.
+> To-do's from the plan have already been created. Do not create them again. Mark them as in_progress as you work, starting with the first one. Don't stop until you have completed all the to-dos.
+
+### 24. 询问是否需要更新 .gitignore
+> 这个 @.gitignore  是不是要更新一下
+
+### 25. 约定点开头文件夹的忽略规则
+> 点开头的文件夹，除了 .cursor 应该都要加到  .gitignore里面区别
+
+### 26. 使用 /update-readme 更新 README
+> /update-readme
+
+### 27. 新增 explain 命令用于解释代码/文字/文件
+> 添加一个 cursor 命令，用来解释所选择的代码、文字、文件等
+
+### 28. 为 explain 命令增加查询能力（Context7 / 联网搜索）
+> @.cursor/commands/explain.md 给它添加一个能力，如果不清楚，可以调用mcp工具 context7或联网搜索工具查询
+
+### 29. 使用 /explain 命令解释 pyproject.toml 段落
+> @pyproject.toml:1-4 /explain 
+
+### 30. 在 explain 命令中支持终端输出类型
+> @.cursor/commands/explain.md 在识别输入类型中增加终端的输出
+
+### 31. 追问 src 目录何时加入 sys.path
+> @c:\Users\Administrator\.cursor\projects\d-git-project-01-MyProject-unifiles\terminals\9.txt:82-86 D:\\git_project\\01-MyProject\\unifiles\\src 是在什么时候添加到 sys.path 中去的
+
+### 32. 询问 .pth 文件的含义与用法
+> *.pth 文件 是什么文件，如何使用
+
+### 33. 运行 /update-history 命令追加本轮记录
+> /update-history 
+
+---
+
+## 模块实现与 MVP 发布
+
+### 34. 规划后续开发阶段
+> @DEVELOPMENT_PLAN.md:463-466 M2 阶段2 已经完成，接下来几个阶段你看看先完成几个，按自己的能力来不要追求太多，现在规划一下
+
+### 35. 规划 M4（Word 模块）
+> 规划一下 M4 @DEVELOPMENT_PLAN.md:481-485 
+
+### 36. 按计划实现 M4（Word 模块）
+> @.cursor/plans/word_模块开发计划_d4abf11a.plan.md 实现计划中的内容，Do NOT edit the plan file itself.
+
+### 37. 继续规划 M5（SQLite 模块）
+> @DEVELOPMENT_PLAN.md:486-489 继续规划 M5
+
+### 38. 继续规划 M3（PDF 模块）
+> @DEVELOPMENT_PLAN.md:491-494 规划M3
+
+### 39. 开始实现 SQLite 模块
+> @.cursor/plans/sqlite_模块开发计划.md 开始编写代码
+
+### 40. 开始实现 PDF 模块
+> @.cursor/plans/pdf_模块开发计划.md 开始写代码
+
+### 41. 询问 MVP 发布准备阶段需要做的事情
+> @DEVELOPMENT_PLAN.md:496-497 这个阶段要做哪些事
+
+### 42. 开始执行 MVP 发布准备（M6）
+> 好的，现在开始
+
+### 43. 更新指令历史
+> /update-history 
+
+---
+
 ## 使用说明
 
 - 之后可在本文件末尾按时间顺序追加新的指令。

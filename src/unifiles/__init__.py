@@ -16,16 +16,14 @@ from .exceptions import (
 # Excel 模块
 from .excel import read_excel, write_excel, get_sheet_names
 
-# 预留后续模块导入位置
-
-# PDF 模块
-# from .pdf import extract_text, extract_tables
-
 # Word 模块
-# from .word import read_docx, write_docx
+from .word import read_docx, write_docx
 
 # SQLite 模块
-# from .sqlite import query, get_schema, get_tables
+from .sqlite import get_schema, get_tables, query
+
+# PDF 模块
+from .pdf import extract_tables, extract_text
 
 __all__ = [
     "__version__",
@@ -36,4 +34,11 @@ __all__ = [
     "read_excel",
     "write_excel",
     "get_sheet_names",
+    "read_docx",
+    "write_docx",
+    "query",
+    "get_schema",
+    "get_tables",
+    "extract_text",
+    "extract_tables",
 ]

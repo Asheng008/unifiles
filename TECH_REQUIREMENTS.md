@@ -403,14 +403,14 @@ tables = unifiles.get_tables("database.db")
 
 ## 7. 开发计划
 
-### 7.1 MVP阶段（当前阶段）
+### 7.1 MVP阶段（已完成）
 - [x] 项目结构搭建
-- [ ] Excel模块实现
-- [ ] PDF模块实现
-- [ ] Word模块实现
-- [ ] SQLite模块实现
-- [ ] 基础测试用例
-- [ ] 文档编写
+- [x] Excel模块实现
+- [x] PDF模块实现
+- [x] Word模块实现
+- [x] SQLite模块实现
+- [x] 基础测试用例
+- [x] 文档编写（README、TECH_REQUIREMENTS、DEVELOPMENT_PLAN 及基础使用文档）
 
 ### 7.2 后续版本规划
 - **v0.2.0**: 添加CSV、JSON文件支持
@@ -471,4 +471,4 @@ tests/
 - 使用 Python 3.9+ 内置泛型与 3.10+ 联合类型 `|` 语法，不依赖 `typing.List`/`typing.Union` 等旧式注解
 
 ## 12. 许可证
-建议使用 MIT 或 Apache 2.0 许可证
+本项目采用 MIT License，详见仓库根目录的 `LICENSE` 文件。
