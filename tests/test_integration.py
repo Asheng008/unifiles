@@ -137,19 +137,19 @@ def test_version():
     """测试版本号格式和存在性。"""
     # 验证版本号属性存在
     assert hasattr(unifiles, "__version__")
-    
+
     # 验证版本号不为空
     version = unifiles.__version__
     assert version is not None
     assert isinstance(version, str)
     assert len(version) > 0
-    
+
     # 验证版本号符合语义化版本格式（MAJOR.MINOR.PATCH）
     # 支持格式：1.2.3, 0.1.0, 1.0.0-alpha.1 等
     semver_pattern = r"^\d+\.\d+\.\d+(-[a-zA-Z0-9.-]+)?(\+[a-zA-Z0-9.-]+)?$"
-    assert re.match(semver_pattern, version), (
-        f"版本号 '{version}' 不符合语义化版本格式 (MAJOR.MINOR.PATCH)"
-    )
+    assert re.match(
+        semver_pattern, version
+    ), f"版本号 '{version}' 不符合语义化版本格式 (MAJOR.MINOR.PATCH)"
 
 
 def test_version_consistency():
@@ -159,15 +159,15 @@ def test_version_consistency():
         import tomllib
     except ImportError:
         import tomli as tomllib
-    
+
     # 读取 pyproject.toml
     pyproject_path = Path(__file__).parent.parent / "pyproject.toml"
     with open(pyproject_path, "rb") as f:
         pyproject = tomllib.load(f)
-    
+
     # 获取 pyproject.toml 中的版本号
     pyproject_version = pyproject["project"]["version"]
-    
+
     # 验证与代码中的版本号一致
     assert unifiles.__version__ == pyproject_version, (
         f"版本号不一致：代码中为 '{unifiles.__version__}'，"
