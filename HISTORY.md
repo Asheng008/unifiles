@@ -161,6 +161,83 @@
 
 ---
 
+## MVP 发布与文档完善
+
+### 44. 编写发布到 PyPI 的技术文档
+> 现在来写技术文档，第一篇来讲讲如何将写好的python项目发布到pypi网站上去
+
+### 45. 询问 HISTORY.md 是否需要加入 .gitignore
+> 这个 @HISTORY.md  文件是否要添加到 .gitignore 里面去
+
+### 46. 询问项目应使用哪种许可证
+> @README.md  你说本项目用什么许可证比较好
+
+### 47. 请求为当前项目编写 MIT 许可证文件
+> 帮我在当前项目写一个 MIT  的许可证
+
+### 48. 询问 pyproject.toml 中作者信息应如何补充
+> @pyproject.toml:5-14 如果放一些作者信息，该添加哪些信息
+
+### 49. 检查 pyproject.toml 和 README.md 是否还需补充作者信息
+> 帮我检查一下 @pyproject.toml @README.md 还需要补充哪些作者信息
+
+### 50. 询问在 GitHub 项目中放二维码的用途
+> 我看好多人放了二维码在GitHub项目里
+
+### 51. 询问 TECH_REQUIREMENTS.md 与 DEVELOPMENT_PLAN.md 是否需要移动到 docs 目录
+> @TECH_REQUIREMENTS.md @DEVELOPMENT_PLAN.md 这两个文件是否要移到 docs 文件夹下
+
+### 52. 提出需要更新 DEVELOPMENT_PLAN.md
+> @DEVELOPMENT_PLAN.md 应该要更新一下吧
+
+### 53. 提出需要更新 TECH_REQUIREMENTS.md
+> @TECH_REQUIREMENTS.md 也要更新一下
+
+### 54. 运行 /update-history 命令，追加本轮记录
+> /update-history 
+
+---
+
+## 版本管理与技术文档完善
+
+### 55. 解释构建日志中的 license 弃用警告并修复
+> @c:\\Users\\Administrator\\.cursor\\projects\\d-git-project-01-MyProject-unifiles\\terminals\\5.txt:114-401 /explain 
+
+### 56. 同意直接修改 pyproject.toml 中 license 配置
+> 好的，直接修改
+
+### 57. 解释 docs/01-发布Python包到PyPI.md 中的 PowerShell 清理命令
+> @docs/01-发布Python包到PyPI.md:147 /explain 
+
+### 58. 询问发布流程是否可以写成一个 Cursor 命令
+> @docs/01-发布Python包到PyPI.md:236-244 这个流程可以写成一个 cursor的command 吗 
+
+### 59. 让助手测试发布到 PyPI 的命令流程
+> 好的，测试一下
+
+### 60. 询问还有哪些后续工作（MVP 完成后）
+> mvp 项目已经完成，发布流程也跑了一遍，你作为一个资深的软件工程师，接下来应该做哪些事
+
+### 61. 编写第二篇技术文档：使用 GitHub Actions 搭建 CI 流水线
+> 在 docs 写第二篇技术文档，详细介绍 GitHub Actions 如何CI，一定要从网上查查，CI的最佳实践
+
+### 62. 编写第三篇技术文档：用 GitHub Actions 自动发布到 TestPyPI / PyPI
+> 好的，第三篇文档里专门写「用 GitHub Actions 自动发布到 TestPyPI / PyPI」
+
+### 63. 编写第四篇技术文档：版本管理与发布节奏
+> 好的，写一篇专门讲「版本管理与发布节奏（语义化版本、Changelog、Release Note）」的文档。 
+
+### 64. 在项目中创建 CHANGELOG.md 初稿并约定后续流程
+> 好的，在项目里创建一个 `CHANGELOG.md` 初稿，并约定从下一个版本开始严格按照 @docs/04-版本管理与发布节奏.md  流程走一遍
+
+### 65. 使用 /update-readme 命令更新 README
+> /update-readme 
+
+### 66. 使用 /update-history 命令追加本轮记录
+> /update-history 
+
+---
+
 ## 使用说明
 
 - 之后可在本文件末尾按时间顺序追加新的指令。

@@ -175,33 +175,50 @@ from unifiles import (
 
 ```
 unifiles/
-├── .cursor/              # Cursor 相关配置（可选）
+├── .cursor/                   # Cursor 相关配置（可选）
 ├── .gitignore
-├── pyproject.toml        # 项目配置与依赖
-├── README.md
-├── TECH_REQUIREMENTS.md # 技术需求
-├── DEVELOPMENT_PLAN.md  # 开发计划
-├── AGENTS.md            # 开发规范（面向 AI/协作）
+├── LICENSE                    # MIT 许可证
+├── CHANGELOG.md               # 面向用户的版本变更记录
+├── HISTORY.md                 # 与助手的指令历史（内部记录）
+├── pyproject.toml             # 项目配置与依赖
+├── README.md                  # 项目说明（当前文档）
+├── TECH_REQUIREMENTS.md       # 技术需求
+├── DEVELOPMENT_PLAN.md        # 开发计划
+├── AGENTS.md                  # 开发规范（面向 AI / 协作）
+├── publish_pypi.bat           # 本地一键发布到 PyPI 的批处理脚本
+├── docs/                      # 技术文档（发布、CI/CD、版本管理）
+│   ├── README.md
+│   ├── 01-发布Python包到PyPI.md
+│   ├── 02-使用GitHub-Actions搭建CI流水线.md
+│   ├── 03-用GitHub-Actions自动发布到PyPI.md
+│   └── 04-版本管理与发布节奏.md
 ├── src/
 │   └── unifiles/
 │       ├── __init__.py
 │       ├── exceptions.py
-│       ├── excel.py     # ✅ 已实现
-│       ├── pdf.py       # ✅ 已实现
-│       ├── word.py      # ✅ 已实现
-│       └── sqlite.py    # ✅ 已实现
+│       ├── excel.py           # ✅ 已实现
+│       ├── pdf.py             # ✅ 已实现
+│       ├── word.py            # ✅ 已实现
+│       └── sqlite.py          # ✅ 已实现
 └── tests/
     ├── __init__.py
     ├── test_excel.py
+    ├── test_pdf.py
+    ├── test_word.py
+    ├── test_sqlite.py
+    ├── test_integration.py
+    ├── test_performance.py
     └── fixtures/
-        └── test_files/  # 测试用示例文件
+        └── test_files/        # 测试用示例文件
 ```
 
 ## 开发与贡献
 
-- 开发规范、类型注解与测试要求见 [AGENTS.md](AGENTS.md)
-- 功能与接口设计见 [TECH_REQUIREMENTS.md](TECH_REQUIREMENTS.md)
-- 阶段与任务安排见 [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md)
+- **开发规范**：类型注解、错误处理、工作流等见 [AGENTS.md](AGENTS.md)
+- **功能与接口设计**：见 [TECH_REQUIREMENTS.md](TECH_REQUIREMENTS.md)
+- **阶段与任务安排**：见 [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md)
+- **版本变更记录**：见 [CHANGELOG.md](CHANGELOG.md)，从下一个版本开始将严格按语义化版本管理
+- **技术文档**：发布流程、CI/CD、版本管理等见 `docs/` 目录
 
 本地开发建议步骤（Windows PowerShell）：
 
