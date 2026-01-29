@@ -8,6 +8,24 @@
 
 - （在开发下一个版本时，将改动先记录在这里；发布时再移动到对应版本小节）
 
+## [0.2.0] - 2026-01-29
+
+### Changed
+
+- **破坏性变更**：将最低 Python 版本要求从 3.9 提升到 3.10
+  - 代码中使用了 Python 3.10+ 的联合类型语法（`|` 运算符），不再兼容 Python 3.9
+  - 更新 CI 工作流，移除 Python 3.9 测试矩阵
+  - 更新 `pyproject.toml` 中的 `requires-python` 和 classifiers
+
+### Added
+
+- 添加 GitHub Actions CI 工作流（`.github/workflows/ci.yml`）
+  - 自动运行代码格式检查（black）
+  - 自动运行类型检查（mypy）
+  - 自动运行单元测试（pytest）
+  - 自动构建分发包验证
+  - 支持 Python 3.10 / 3.11 / 3.12 多版本测试
+
 ## [0.1.0] - 2026-01-28
 
 ### Added
