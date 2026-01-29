@@ -135,4 +135,4 @@ def test_exception_hierarchy():
 def test_version():
     """测试版本号。"""
     assert hasattr(unifiles, "__version__")
-    assert unifiles.__version__ == "0.1.0"
+    assert unifiles.__version__ == "0.2.0"
