@@ -5,7 +5,7 @@ import sqlite3
 import pandas as pd
 from pathlib import Path
 
-from unifiles.sqlite import query, get_schema, get_tables
+from unifiles.sqlite import get_database_info, query, get_schema, get_tables
 from unifiles.exceptions import FileReadError
 
 
@@ -193,3 +193,86 @@ def test_get_tables_file_not_found():
     """测试数据库不存在的情况。"""
     with pytest.raises(FileNotFoundError, match="数据库文件不存在"):
         get_tables("nonexistent.db")
+
+
+def test_get_database_info_basic(tmp_path: Path):
+    """测试获取数据库基本信息。"""
+    db_path = tmp_path / "test.db"
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+    cursor.execute("CREATE TABLE users (id INTEGER, name TEXT, age INTEGER)")
+    cursor.execute("INSERT INTO users VALUES (1, 'Alice', 25)")
+    cursor.execute("INSERT INTO users VALUES (2, 'Bob', 30)")
+    cursor.execute(
+        "CREATE TABLE products (id INTEGER PRIMARY KEY, name TEXT, price REAL)"
+    )
+    cursor.execute("INSERT INTO products VALUES (1, 'Product A', 10.5)")
+    conn.commit()
+    conn.close()
+
+    info = get_database_info(str(db_path))
+    assert isinstance(info, dict)
+    assert "db_path" in info
+    assert "file_size" in info
+    assert "table_count" in info
+    assert "table_names" in info
+    assert "tables" in info
+
+    assert info["table_count"] == 2
+    assert "users" in info["table_names"]
+    assert "products" in info["table_names"]
+
+    # 检查表信息
+    users_table = next(t for t in info["tables"] if t["table_name"] == "users")
+    assert users_table["row_count"] == 2
+    assert users_table["column_count"] == 3
+    assert "id" in users_table["column_names"]
+    assert "name" in users_table["column_names"]
+    assert "age" in users_table["column_names"]
+    assert users_table["column_types"]["id"] == "INTEGER"
+    assert users_table["column_types"]["name"] == "TEXT"
+    assert users_table["column_types"]["age"] == "INTEGER"
+
+    products_table = next(t for t in info["tables"] if t["table_name"] == "products")
+    assert products_table["row_count"] == 1
+    assert products_table["column_count"] == 3
+
+
+def test_get_database_info_with_preview(tmp_path: Path):
+    """测试获取数据库信息（包含预览数据）。"""
+    db_path = tmp_path / "test.db"
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+    cursor.execute("CREATE TABLE users (id INTEGER, name TEXT, age INTEGER)")
+    cursor.execute("INSERT INTO users VALUES (1, 'Alice', 25)")
+    cursor.execute("INSERT INTO users VALUES (2, 'Bob', 30)")
+    cursor.execute("INSERT INTO users VALUES (3, 'Charlie', 35)")
+    conn.commit()
+    conn.close()
+
+    info = get_database_info(str(db_path), include_preview=True, preview_rows=2)
+    users_table = next(t for t in info["tables"] if t["table_name"] == "users")
+    assert "preview" in users_table
+    assert isinstance(users_table["preview"], list)
+    assert len(users_table["preview"]) == 2  # 预览 2 行
+    assert users_table["preview"][0]["name"] == "Alice"
+    assert users_table["preview"][1]["name"] == "Bob"
+
+
+def test_get_database_info_empty_database(tmp_path: Path):
+    """测试空数据库。"""
+    db_path = tmp_path / "test.db"
+    # 创建空数据库
+    conn = sqlite3.connect(db_path)
+    conn.close()
+
+    info = get_database_info(str(db_path))
+    assert info["table_count"] == 0
+    assert info["table_names"] == []
+    assert info["tables"] == []
+
+
+def test_get_database_info_file_not_found():
+    """测试数据库不存在的情况。"""
+    with pytest.raises(FileNotFoundError, match="数据库文件不存在"):
+        get_database_info("nonexistent.db")

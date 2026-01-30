@@ -6,23 +6,23 @@
 
 - **统一接口**：不同文件类型使用一致的 API 设计，降低学习成本
 - **模块化**：按文件类型分模块，可单独导入使用
-- **类型安全**：完整类型注解（Python 3.9+），支持静态检查
+- **类型安全**：完整类型注解（Python 3.10+），支持静态检查
 - **易于扩展**：便于增加新的文件类型支持
 
 ## 支持的文件类型
 
 | 类型       | 扩展名          | 功能说明                     | 状态   |
 |------------|-----------------|------------------------------|--------|
-| Excel      | `.xlsx`, `.xls` | 读取、写入、获取工作表名称   | ✅ 已实现 |
+| Excel      | `.xlsx`, `.xls` | 读取、写入、获取工作表名称、获取列名、获取工作表/文件信息 | ✅ 已实现 |
 | PDF        | `.pdf`          | 提取文本、提取表格（基础）   | ✅ 已实现 |
 | Word       | `.docx`         | 读取、写入                    | ✅ 已实现 |
-| SQLite     | `.db`, `.sqlite`| 执行查询、获取表结构、获取表名| ✅ 已实现 |
+| SQLite     | `.db`, `.sqlite`| 执行查询、获取表结构、获取表名、获取数据库信息 | ✅ 已实现 |
 
 > **说明**：PDF 表格抽取将基于 `pypdf`，仅适合基础表格；复杂版式、多列、合并单元格等可能不准，后续版本会评估引入 `pdfplumber` 等方案。
 
 ## 环境要求
 
-- **Python**：3.9+（推荐 3.10+）
+- **Python**：3.10+（与 `pyproject.toml` 一致）
 - **操作系统**：Windows 10+、主流 Linux、macOS 10.14+
 
 ## 安装
@@ -67,6 +67,15 @@ df = unifiles.read_excel("data.xlsx", sheet_name="Sheet1")
 
 # 获取所有工作表名称
 sheets = unifiles.get_sheet_names("data.xlsx")
+
+# 获取列名
+columns = unifiles.get_column_names("data.xlsx", sheet_name="Sheet1")
+
+# 获取工作表信息
+sheet_info = unifiles.get_sheet_info("data.xlsx", sheet_name="Sheet1")
+
+# 获取整个 Excel 文件信息
+excel_info = unifiles.get_excel_info("data.xlsx", include_preview=True)
 
 # 写入（覆盖整个文件）
 unifiles.write_excel(df, "output.xlsx", sheet_name="Results")
@@ -127,6 +136,10 @@ print(schema)  # {'id': 'INTEGER', 'name': 'TEXT', 'age': 'INTEGER'}
 # 获取表名列表
 tables = unifiles.get_tables("database.db")
 print(tables)  # ['users', 'products', 'orders']
+
+# 获取数据库完整信息
+db_info = unifiles.get_database_info("database.db", include_preview=True)
+print(db_info)  # 包含文件大小、表数量、每个表的详细信息等
 ```
 
 ## API 概览
@@ -136,6 +149,9 @@ print(tables)  # ['users', 'products', 'orders']
 | Excel  | `read_excel(file_path, sheet_name=None)` | 读取为 DataFrame | ✅ 已实现 |
 | Excel  | `write_excel(data, file_path, sheet_name="Sheet1")` | 写入（覆盖整个文件） | ✅ 已实现 |
 | Excel  | `get_sheet_names(file_path)` | 返回工作表名称列表 | ✅ 已实现 |
+| Excel  | `get_column_names(file_path, sheet_name=None, header=0, peek_rows=0)` | 返回列名列表或预览行 | ✅ 已实现 |
+| Excel  | `get_sheet_info(file_path, sheet_name=None, preview_rows=5)` | 返回工作表详细信息 | ✅ 已实现 |
+| Excel  | `get_excel_info(file_path, include_preview=False, preview_rows=3)` | 返回整个 Excel 文件信息 | ✅ 已实现 |
 | PDF    | `extract_text(file_path, page_range=None)` | 提取文本 | ✅ 已实现 |
 | PDF    | `extract_tables(file_path, page_range=None)` | 提取表格列表（MVP：基础表格） | ✅ 已实现 |
 | Word   | `read_docx(file_path)` | 读取为字符串 | ✅ 已实现 |
@@ -143,6 +159,7 @@ print(tables)  # ['users', 'products', 'orders']
 | SQLite | `query(db_path, sql, params=None)` | 执行 SQL，返回 DataFrame | ✅ 已实现 |
 | SQLite | `get_schema(db_path, table_name)` | 返回字段名到类型的映射 | ✅ 已实现 |
 | SQLite | `get_tables(db_path)` | 返回表名列表 | ✅ 已实现 |
+| SQLite | `get_database_info(db_path, include_preview=False, preview_rows=3)` | 返回数据库完整信息 | ✅ 已实现 |
 
 导入方式示例：
 
@@ -155,6 +172,9 @@ from unifiles import (
     read_excel,
     write_excel,
     get_sheet_names,
+    get_column_names,
+    get_sheet_info,
+    get_excel_info,
     read_docx,
     write_docx,
     extract_text,
@@ -162,6 +182,7 @@ from unifiles import (
     query,
     get_schema,
     get_tables,
+    get_database_info,
 )
 from unifiles import (
     UnifilesError,
@@ -185,7 +206,10 @@ unifiles/
 ├── TECH_REQUIREMENTS.md       # 技术需求
 ├── DEVELOPMENT_PLAN.md        # 开发计划
 ├── AGENTS.md                  # 开发规范（面向 AI / 协作）
+├── requirements.txt           # 依赖锁文件（可选）
 ├── publish_pypi.bat           # 本地一键发布到 PyPI 的批处理脚本
+├── .github/workflows/         # GitHub Actions CI 配置
+│   └── ci.yml
 ├── docs/                      # 技术文档（发布、CI/CD、版本管理）
 │   ├── README.md
 │   ├── 01-发布Python包到PyPI.md
@@ -219,6 +243,7 @@ unifiles/
 - **阶段与任务安排**：见 [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md)
 - **版本变更记录**：见 [CHANGELOG.md](CHANGELOG.md)，从下一个版本开始将严格按语义化版本管理
 - **技术文档**：发布流程、CI/CD、版本管理等见 `docs/` 目录
+- **提交前检查**：推送前建议先跑与 CI 一致的本地检查，见 [.cursor/commands/ci-commit-and-push.md](.cursor/commands/ci-commit-and-push.md)
 
 本地开发建议步骤（Windows PowerShell）：
 
@@ -236,7 +261,8 @@ pytest tests/ -v
 # 类型检查
 mypy src/unifiles/
 
-# 代码格式化
+# 格式检查与自动格式化
+black --check src/ tests/
 black src/ tests/
 ```
 

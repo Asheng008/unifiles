@@ -6,7 +6,7 @@
 
 - **角色定位**: 高级 Python 软件工程师，专注于文件操作工具库开发。
 - **核心专长**: 统一的文件操作接口，支持多种文件类型的读取、写入、抽取和查询。
-- **技术栈**: Python 3.9+，严格类型注解（使用 Python 3.9+ 现代语法），遵循 SOLID 原则和清洁架构。
+- **技术栈**: Python 3.10+，严格类型注解（使用 Python 3.10+ 现代语法），遵循 SOLID 原则和清洁架构。
 - **目标**: 构建高效、可维护、类型安全的文件操作工具函数库。
 
 ## 2. 系统运行环境 (Environment Context)
@@ -64,7 +64,7 @@
 
 ### 4.1 代码规范
 - **类型安全**: 所有函数参数**必须**有类型提示（Type Hints）。
-- **类型注解风格**: 使用 **Python 3.9+ 现代语法**：
+- **类型注解风格**: 使用 **Python 3.10+ 现代语法**：
   - ✅ 使用 `list[str]` 而不是 `List[str]`
   - ✅ 使用 `dict[str, int]` 而不是 `Dict[str, int]`
   - ✅ 使用 `tuple[int, int]` 而不是 `Tuple[int, int]`
@@ -83,12 +83,12 @@
 ### 4.3 Python 版本与类型注解规范
 
 #### Python 版本要求
-- **最低版本**: Python 3.9+
-- **推荐版本**: Python 3.10+（支持联合类型 `|` 运算符）
+- **最低版本**: Python 3.10+
+- **推荐版本**: Python 3.11+（可选，用于最新特性）
 
-#### 类型注解最佳实践（Python 3.9+）
+#### 类型注解最佳实践（Python 3.10+）
 ```python
-# ✅ 推荐：使用内置类型（Python 3.9+）
+# ✅ 推荐：使用内置类型（Python 3.10+）
 def process_data(items: list[str]) -> dict[str, int]:
     return {item: len(item) for item in items}
 
@@ -96,18 +96,18 @@ def process_data(items: list[str]) -> dict[str, int]:
 def read_file(file_path: str | Path) -> str | None:
     ...
 
-# ⚠️ 兼容：如果必须支持 Python 3.9，使用 Union（Python 3.9）
+# ⚠️ 兼容：若需支持 Python 3.10 以下，可使用 Union
 from typing import Union
-def read_file(file_path: Union[str, Path]) -> Union[str, None]:  # Python 3.9 兼容
+def read_file(file_path: Union[str, Path]) -> Union[str, None]:  # 旧版 Python 兼容
     ...
 
-# ❌ 避免：旧式类型注解（Python 3.8 及以下）
+# ❌ 避免：旧式类型注解（Python 3.9 及以下）
 from typing import List, Dict, Union, Optional
 def process_data(items: List[str]) -> Dict[str, int]:  # 不推荐
     ...
 ```
 
-**注意**: 项目要求 Python 3.9+，推荐使用 Python 3.10+ 的 `|` 运算符语法，代码更简洁现代。
+**注意**: 项目要求 Python 3.10+，使用内置类型与 `|` 联合类型语法，代码简洁现代。
 
 #### 类型注解检查
 - 使用 `mypy` 进行类型检查：`mypy src/unifiles/`
@@ -315,8 +315,8 @@ def test_get_sheet_names(tmp_path):
 在提交代码前，必须在心中打钩：
 - [ ] **工具**: 是否先查阅了 Context7/RefTool 获取最新文档？
 - [ ] **环境**: 是否使用了 PowerShell 兼容路径和命令？
-- [ ] **Python版本**: 代码是否兼容 Python 3.9+？
-- [ ] **类型注解**: 是否使用了 Python 3.9+ 现代语法（`list[str]` 而非 `List[str]`）？
+- [ ] **Python版本**: 代码是否兼容 Python 3.10+？
+- [ ] **类型注解**: 是否使用了 Python 3.10+ 现代语法（`list[str]` 而非 `List[str]`）？
 - [ ] **类型完整性**: 是否所有函数参数和返回值都有 Type Hint？
 - [ ] **文档**: 是否所有公共函数都有完整的 docstring（Google 风格）？
 - [ ] **错误处理**: 是否使用了合适的异常类型，错误信息是否清晰？
@@ -330,7 +330,7 @@ def test_get_sheet_names(tmp_path):
 - ❌ **严禁** 假设用户安装了 `make` 或 `bash`。
 - ❌ **严禁** 在未阅读现有代码和需求文档的情况下直接添加新功能。
 - ❌ **严禁** 使用系统 Python，必须使用项目虚拟环境中的 Python。
-- ❌ **严禁** 使用 Python 3.8 及以下的旧式类型注解（如 `List[str]`, `Dict[str, int]`, `Union[str, int]`）。
+- ❌ **严禁** 使用 Python 3.9 及以下的旧式类型注解（如 `List[str]`, `Dict[str, int]`, `Union[str, int]`）。
 - ❌ **严禁** 忽略错误处理，所有文件操作必须处理文件不存在、权限不足等异常。
 - ❌ **严禁** 硬编码文件路径，必须使用参数传入。
 - ❌ **严禁** 修改函数签名而不更新测试用例。
