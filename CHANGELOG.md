@@ -8,6 +8,15 @@
 
 - （在开发下一个版本时，将改动先记录在这里；发布时再移动到对应版本小节）
 
+## [0.3.1] - 2026-01-30
+
+### Fixed
+
+- 修复 `fillna()` 方法在某些 pandas 版本中的兼容性问题
+  - 将 `fillna(None)` 改为 `fillna(value=None)`，明确指定参数名
+  - 影响函数：`get_excel_info()`, `get_sheet_info()`, `get_database_info()`
+  - 解决了 GitHub Actions CI 中出现的 "Must specify a fill 'value' or 'method'" 错误
+
 ## [0.3.0] - 2026-01-30
 
 ### Added

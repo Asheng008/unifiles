@@ -303,7 +303,7 @@ def get_excel_info(
             # 如果需要预览数据
             if include_preview:
                 preview_df = df.head(preview_rows)
-                preview_df_filled = preview_df.fillna(None)
+                preview_df_filled = preview_df.fillna(value=None)
                 sheet_info["preview"] = preview_df_filled.to_dict("records")
 
             sheets_info.append(sheet_info)
@@ -395,7 +395,7 @@ def get_sheet_info(
         # 获取预览数据（转换为字典列表，便于 JSON 序列化）
         preview_df = df.head(preview_rows)
         # 处理 NaN 值，转换为 None
-        preview_df_filled = preview_df.fillna(None)
+        preview_df_filled = preview_df.fillna(value=None)
         preview = preview_df_filled.to_dict("records")
 
         info: dict[str, Any] = {

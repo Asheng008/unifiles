@@ -3,7 +3,7 @@
 提供跨文件类型的统一接口，简化 Python 中对不同类型文件的读取、写入、抽取和查询操作。
 """
 
-__version__ = "0.3.0"
+__version__ = "0.3.1"
 
 # 导出异常类
 from .exceptions import (

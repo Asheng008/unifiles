@@ -228,7 +228,7 @@ def get_database_info(
                     db_path, f"SELECT * FROM {table_name} LIMIT {preview_rows}"
                 )
                 # 处理 NaN 值，转换为 None，便于 JSON 序列化
-                preview_df_filled = preview_df.fillna(None)
+                preview_df_filled = preview_df.fillna(value=None)
                 table_info["preview"] = preview_df_filled.to_dict("records")
 
             tables_info.append(table_info)
