@@ -13,6 +13,8 @@
 
 > **CRITICAL**: 宿主环境为 **Windows 11**，默认 Shell 为 **PowerShell**。
 
+- **项目路径**: 当前项目绝对路径为 `D:\git_project\01-MyProject\unifiles-series\unifiles`。
+
 - **基础规范**:
   - **路径**: 代码中用 `/` (或 `pathlib`)，终端命令中用 `\`。
   - **禁令**: ❌ 严禁使用 Linux 命令 (`ls`, `export`, `touch`, `rm`, `source`)。
@@ -22,9 +24,14 @@
   - ❌ **严禁**: 直接使用全局 `python` 或 `pip`。
   - ❌ **严禁**: 依赖手动激活 (`Activate.ps1`)，容易因上下文丢失而出错。
   - ✅ **必须使用 venv 绝对路径**:
-    - 运行脚本: `.\.venv\Scripts\python.exe script.py`
-    - 安装依赖: `.\.venv\Scripts\python.exe -m pip install <package>`
-    - 检查版本: `.\.venv\Scripts\python.exe --version`
+    - 运行脚本: `D:\git_project\01-MyProject\unifiles-series\unifiles\.venv\Scripts\python.exe script.py`
+    - 安装依赖: `D:\git_project\01-MyProject\unifiles-series\unifiles\.venv\Scripts\python.exe -m pip install <package>`
+    - 检查版本: `D:\git_project\01-MyProject\unifiles-series\unifiles\.venv\Scripts\python.exe --version`
+    - 推荐（可复用变量）:
+      - `$env:PY="D:\git_project\01-MyProject\unifiles-series\unifiles\.venv\Scripts\python.exe"`
+      - `& $env:PY -m pip install -e ".[dev]"`
+      - `& $env:PY -m black --check src\tests\`
+      - `& $env:PY -m mypy src\unifiles\`
 
 - **编码安全**:
   - 为防止中文乱码，执行输出相关的命令前建议预置: 

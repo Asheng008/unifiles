@@ -3,12 +3,18 @@
 提供 Excel 文件的读取、写入和查询功能。
 """
 
-from typing import Any
+from typing import Any, cast
 
 import pandas as pd
 from pathlib import Path
 
 from .exceptions import FileReadError, FileWriteError
+
+
+def _df_preview_to_records(df: pd.DataFrame) -> list[dict[str, Any]]:
+    df_obj = df.astype(object)
+    df_none = df_obj.where(pd.notna(df_obj), None)
+    return cast(list[dict[str, Any]], df_none.to_dict("records"))
 
 
 def read_excel(file_path: str, sheet_name: str | int | None = None) -> pd.DataFrame:
@@ -303,8 +309,7 @@ def get_excel_info(
             # 如果需要预览数据
             if include_preview:
                 preview_df = df.head(preview_rows)
-                preview_df_filled = preview_df.fillna(value=None)
-                sheet_info["preview"] = preview_df_filled.to_dict("records")
+                sheet_info["preview"] = _df_preview_to_records(preview_df)
 
             sheets_info.append(sheet_info)
 
@@ -394,9 +399,7 @@ def get_sheet_info(
 
         # 获取预览数据（转换为字典列表，便于 JSON 序列化）
         preview_df = df.head(preview_rows)
-        # 处理 NaN 值，转换为 None
-        preview_df_filled = preview_df.fillna(value=None)
-        preview = preview_df_filled.to_dict("records")
+        preview = _df_preview_to_records(preview_df)
 
         info: dict[str, Any] = {
             "sheet_name": actual_sheet_name,

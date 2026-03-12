@@ -3,7 +3,7 @@
 提供 SQLite 数据库的查询和元数据获取功能。
 """
 
-from typing import Any
+from typing import Any, cast
 
 import sqlite3
 from pathlib import Path
@@ -12,6 +12,12 @@ import pandas as pd
 from pandas.errors import DatabaseError
 
 from .exceptions import FileReadError
+
+
+def _df_preview_to_records(df: pd.DataFrame) -> list[dict[str, Any]]:
+    df_obj = df.astype(object)
+    df_none = df_obj.where(pd.notna(df_obj), None)
+    return cast(list[dict[str, Any]], df_none.to_dict("records"))
 
 
 def query(db_path: str, sql: str, params: tuple | dict | None = None) -> pd.DataFrame:
@@ -227,9 +233,7 @@ def get_database_info(
                 preview_df = query(
                     db_path, f"SELECT * FROM {table_name} LIMIT {preview_rows}"
                 )
-                # 处理 NaN 值，转换为 None，便于 JSON 序列化
-                preview_df_filled = preview_df.fillna(value=None)
-                table_info["preview"] = preview_df_filled.to_dict("records")
+                table_info["preview"] = _df_preview_to_records(preview_df)
 
             tables_info.append(table_info)
 
