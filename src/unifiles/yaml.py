@@ -69,9 +69,7 @@ def write_yaml(
     path = Path(file_path)
     try:
         with path.open("w", encoding=encoding) as f:
-            yaml.safe_dump(
-                data, f, allow_unicode=allow_unicode, sort_keys=sort_keys
-            )
+            yaml.safe_dump(data, f, allow_unicode=allow_unicode, sort_keys=sort_keys)
     except PermissionError:
         raise
     except Exception as e:
@@ -103,4 +101,6 @@ def yaml_to_json(
     from .json import write_json
 
     data = read_yaml(yaml_path, encoding=encoding)
-    write_json(data, json_path, encoding=encoding, indent=indent, ensure_ascii=ensure_ascii)
+    write_json(
+        data, json_path, encoding=encoding, indent=indent, ensure_ascii=ensure_ascii
+    )

@@ -40,7 +40,11 @@ def read_txt(file_path: str, encoding: str = "utf-8") -> str:
     except FileNotFoundError:
         raise
     except UnicodeDecodeError as e:
-        hint = "若文件为 GBK 等编码，可尝试传入 encoding='gbk'" if encoding == "utf-8" else ""
+        hint = (
+            "若文件为 GBK 等编码，可尝试传入 encoding='gbk'"
+            if encoding == "utf-8"
+            else ""
+        )
         raise FileReadError(f"读取文本文件失败（解码错误）: {e}. {hint}".strip()) from e
     except Exception as e:
         raise FileReadError(f"读取文本文件失败: {e}") from e
