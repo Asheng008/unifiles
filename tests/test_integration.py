@@ -17,6 +17,8 @@ from unifiles import (
     write_excel,
     read_docx,
     write_docx,
+    read_txt,
+    write_txt,
     query,
     get_schema,
     get_tables,
@@ -93,6 +95,15 @@ def test_sqlite_to_excel_workflow(tmp_path: Path):
     assert "Product A" in df_read["name"].values
 
 
+def test_txt_write_then_read_workflow(tmp_path: Path):
+    """测试写入纯文本再读回的流程。"""
+    txt_file = tmp_path / "note.txt"
+    content = "标题\n\n第一段内容。\n第二段内容。"
+    write_txt(content, str(txt_file))
+    result = read_txt(str(txt_file))
+    assert result == content
+
+
 def test_all_modules_import():
     """测试所有模块都可以正常导入。"""
     # 测试主模块导入
@@ -100,6 +111,8 @@ def test_all_modules_import():
     assert hasattr(unifiles, "write_excel")
     assert hasattr(unifiles, "read_docx")
     assert hasattr(unifiles, "write_docx")
+    assert hasattr(unifiles, "read_txt")
+    assert hasattr(unifiles, "write_txt")
     assert hasattr(unifiles, "query")
     assert hasattr(unifiles, "get_schema")
     assert hasattr(unifiles, "get_tables")
@@ -111,6 +124,8 @@ def test_all_modules_import():
     assert callable(write_excel)
     assert callable(read_docx)
     assert callable(write_docx)
+    assert callable(read_txt)
+    assert callable(write_txt)
     assert callable(query)
     assert callable(get_schema)
     assert callable(get_tables)

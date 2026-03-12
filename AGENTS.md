@@ -11,29 +11,26 @@
 
 ## 2. 系统运行环境 (Environment Context)
 
-> **CRITICAL**: 当前宿主环境为 **Windows 11**，默认 Shell 为 **PowerShell**。
+> **CRITICAL**: 宿主环境为 **Windows 11**，默认 Shell 为 **PowerShell**。
 
-- **OS**: Windows 11
-- **Shell**: PowerShell 5.1 / 7+
-- **路径规范**:
-  - 代码中 (Python): 始终使用正斜杠 `/` 或 `pathlib.Path`。
-  - 终端命令中: 注意反斜杠 `\` 的兼容性。
-- **命令行约束**:
-  - ❌ **严禁**使用 Linux 专属命令: `export`, `ls -la`, `touch`, `rm -rf`, `source`。
-  - ✅ **必须**使用 PowerShell 语法:
-    - 设置变量: `$env:VAR='val'`
-    - 激活环境: `.\.venv\Scripts\Activate.ps1`
-    - 文件操作: `New-Item`, `Remove-Item`, `Get-Content`
-    - 链式命令: 使用 `;` 分隔。
-  - ✅ **Python 命令执行**: 执行任何 Python 命令前，**必须**先激活当前项目的虚拟环境:
-    - 激活虚拟环境: `.\.venv\Scripts\Activate.ps1`
-    - 或在命令链中激活: `.\.venv\Scripts\Activate.ps1; python <script.py>`
-    - 或使用完整路径: `.\.venv\Scripts\python.exe <script.py>`
-    - **严禁**直接使用系统 Python (`python`)，必须使用虚拟环境中的 Python
-  - ✅ **编码设置**: 执行终端命令前，**必须**先设置 UTF-8 编码以防止中文输出乱码:
-    - 优先使用: `chcp 65001` (设置代码页为 UTF-8)
-    - 备选方案: PowerShell 5+ 可使用 `[Console]::OutputEncoding = [System.Text.Encoding]::UTF8`
-    - 建议在命令链开头执行: `chcp 65001; <your-command>`
+- **基础规范**:
+  - **路径**: 代码中用 `/` (或 `pathlib`)，终端命令中用 `\`。
+  - **禁令**: ❌ 严禁使用 Linux 命令 (`ls`, `export`, `touch`, `rm`, `source`)。
+  - **语法**: ✅ 必须使用 PowerShell 语法 (`$env:VAR='val'`, `;` 分隔, `New-Item`)。
+
+- **Python & Pip 执行铁律**:
+  - ❌ **严禁**: 直接使用全局 `python` 或 `pip`。
+  - ❌ **严禁**: 依赖手动激活 (`Activate.ps1`)，容易因上下文丢失而出错。
+  - ✅ **必须使用 venv 绝对路径**:
+    - 运行脚本: `.\.venv\Scripts\python.exe script.py`
+    - 安装依赖: `.\.venv\Scripts\python.exe -m pip install <package>`
+    - 检查版本: `.\.venv\Scripts\python.exe --version`
+
+- **编码安全**:
+  - 为防止中文乱码，执行输出相关的命令前建议预置: 
+    `[Console]::OutputEncoding=[System.Text.UTF8Encoding]::UTF8; chcp 65001`
+  - 若 Python 子进程输出含非 ASCII（如 twine/rich 进度条）导致 `UnicodeEncodeError`，可在当次会话先设: 
+    `$env:PYTHONIOENCODING='utf-8'`（仅建议按需使用，勿全局设置）。
 
 ## 3. 工具体系与调用策略 (Tools & Strategy)
 
@@ -334,3 +331,5 @@ def test_get_sheet_names(tmp_path):
 - ❌ **严禁** 忽略错误处理，所有文件操作必须处理文件不存在、权限不足等异常。
 - ❌ **严禁** 硬编码文件路径，必须使用参数传入。
 - ❌ **严禁** 修改函数签名而不更新测试用例。
+- ❌ **严禁** 直接使用系统 Python，必须使用虚拟环境中的 Python。
+- ❌ **严禁** 在未激活虚拟环境时执行 `pip install`（会装到系统 Python，导致依赖不在项目 venv 中）。

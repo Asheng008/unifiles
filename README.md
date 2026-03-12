@@ -144,22 +144,7 @@ print(db_info)  # 包含文件大小、表数量、每个表的详细信息等
 
 ## API 概览
 
-| 模块   | 函数 | 说明                         | 状态   |
-|--------|------|------------------------------|--------|
-| Excel  | `read_excel(file_path, sheet_name=None)` | 读取为 DataFrame | ✅ 已实现 |
-| Excel  | `write_excel(data, file_path, sheet_name="Sheet1")` | 写入（覆盖整个文件） | ✅ 已实现 |
-| Excel  | `get_sheet_names(file_path)` | 返回工作表名称列表 | ✅ 已实现 |
-| Excel  | `get_column_names(file_path, sheet_name=None, header=0, peek_rows=0)` | 返回列名列表或预览行 | ✅ 已实现 |
-| Excel  | `get_sheet_info(file_path, sheet_name=None, preview_rows=5)` | 返回工作表详细信息 | ✅ 已实现 |
-| Excel  | `get_excel_info(file_path, include_preview=False, preview_rows=3)` | 返回整个 Excel 文件信息 | ✅ 已实现 |
-| PDF    | `extract_text(file_path, page_range=None)` | 提取文本 | ✅ 已实现 |
-| PDF    | `extract_tables(file_path, page_range=None)` | 提取表格列表（MVP：基础表格） | ✅ 已实现 |
-| Word   | `read_docx(file_path)` | 读取为字符串 | ✅ 已实现 |
-| Word   | `write_docx(content, file_path, title=None)` | 写入文档 | ✅ 已实现 |
-| SQLite | `query(db_path, sql, params=None)` | 执行 SQL，返回 DataFrame | ✅ 已实现 |
-| SQLite | `get_schema(db_path, table_name)` | 返回字段名到类型的映射 | ✅ 已实现 |
-| SQLite | `get_tables(db_path)` | 返回表名列表 | ✅ 已实现 |
-| SQLite | `get_database_info(db_path, include_preview=False, preview_rows=3)` | 返回数据库完整信息 | ✅ 已实现 |
+当前已实现 **Excel**、**PDF**、**Word**、**SQLite** 四类文件的读写与元数据接口，以及统一异常类（`UnifilesError`、`FileFormatError`、`FileReadError`、`FileWriteError`）。完整 API 列表与说明见 [docs/api.md](docs/api.md)。
 
 导入方式示例：
 

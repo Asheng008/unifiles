@@ -3,7 +3,7 @@
 提供跨文件类型的统一接口，简化 Python 中对不同类型文件的读取、写入、抽取和查询操作。
 """
 
-__version__ = "0.3.1"
+__version__ = "0.3.2"
 
 # 导出异常类
 from .exceptions import (
@@ -26,6 +26,15 @@ from .excel import (
 # Word 模块
 from .word import read_docx, write_docx
 
+# TXT 模块
+from .txt import read_txt, write_txt
+
+# JSON 模块
+from .json import read_json, write_json, json_to_yaml
+
+# YAML 模块
+from .yaml import read_yaml, write_yaml, yaml_to_json
+
 # SQLite 模块
 from .sqlite import get_database_info, get_schema, get_tables, query
 
@@ -46,6 +55,14 @@ __all__ = [
     "get_excel_info",
     "read_docx",
     "write_docx",
+    "read_txt",
+    "write_txt",
+    "read_json",
+    "write_json",
+    "json_to_yaml",
+    "read_yaml",
+    "write_yaml",
+    "yaml_to_json",
     "query",
     "get_schema",
     "get_tables",
