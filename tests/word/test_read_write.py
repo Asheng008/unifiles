@@ -1,16 +1,16 @@
-"""Word 模块测试用例。"""
+"""read_docx 和 write_docx 测试。"""
+
+from pathlib import Path
 
 import pytest
-from pathlib import Path
 from docx import Document
 
-from unifiles.word import read_docx, write_docx, extract_tables_docx
-from unifiles.exceptions import FileReadError, FileWriteError
+from unifiles.word import read_docx, write_docx
+from unifiles.exceptions import FileReadError
 
 
 def test_read_docx_success(tmp_path: Path):
     """测试成功读取 Word 文档。"""
-    # 创建测试文件
     test_file = tmp_path / "test.docx"
     doc = Document()
     doc.add_paragraph("这是第一段。")
@@ -18,13 +18,11 @@ def test_read_docx_success(tmp_path: Path):
     doc.add_paragraph("这是第三段。")
     doc.save(test_file)
 
-    # 测试读取
     result = read_docx(str(test_file))
     assert isinstance(result, str)
     assert "第一段" in result
     assert "第二段" in result
     assert "第三段" in result
-    # 验证段落之间用换行符分隔
     lines = result.split("\n")
     assert len(lines) == 3
 
@@ -40,7 +38,6 @@ def test_read_docx_empty_paragraphs(tmp_path: Path):
 
     result = read_docx(str(test_file))
     lines = result.split("\n")
-    # 空段落应该被跳过
     assert len(lines) == 2
     assert "第一段" in result
     assert "第二段" in result
@@ -54,11 +51,9 @@ def test_read_docx_file_not_found():
 
 def test_read_docx_invalid_format(tmp_path: Path):
     """测试无效格式文件。"""
-    # 创建一个非 .docx 文件
     test_file = tmp_path / "test.txt"
     test_file.write_text("这不是 Word 文档")
 
-    # python-docx 会抛出异常，应该被捕获为 FileReadError
     with pytest.raises(FileReadError):
         read_docx(str(test_file))
 
@@ -70,10 +65,7 @@ def test_write_docx_success(tmp_path: Path):
 
     write_docx(content, str(test_file))
 
-    # 验证文件已创建
     assert test_file.exists()
-
-    # 验证内容
     result = read_docx(str(test_file))
     assert "第一行" in result
     assert "第二行" in result
@@ -88,12 +80,8 @@ def test_write_docx_with_title(tmp_path: Path):
 
     write_docx(content, str(test_file), title=title)
 
-    # 验证文件已创建
     assert test_file.exists()
-
-    # 验证内容包含标题和正文
     result = read_docx(str(test_file))
-    # 标题会被读取为段落，所以应该包含标题文本
     assert title in result or "我的文档" in result
     assert "文档内容" in result
 
@@ -105,10 +93,7 @@ def test_write_docx_without_title(tmp_path: Path):
 
     write_docx(content, str(test_file))
 
-    # 验证文件已创建
     assert test_file.exists()
-
-    # 验证内容
     result = read_docx(str(test_file))
     assert "内容" in result
 
@@ -120,10 +105,7 @@ def test_write_docx_empty_content(tmp_path: Path):
 
     write_docx(content, str(test_file))
 
-    # 验证文件已创建
     assert test_file.exists()
-
-    # 验证可以读取（即使内容为空）
     result = read_docx(str(test_file))
     assert isinstance(result, str)
 
@@ -132,7 +114,6 @@ def test_write_docx_invalid_content(tmp_path: Path):
     """测试无效内容格式。"""
     test_file = tmp_path / "output.docx"
 
-    # 测试非字符串类型
     with pytest.raises(ValueError, match="内容格式无效"):
         write_docx(123, str(test_file))  # type: ignore
 
@@ -149,81 +130,4 @@ def test_write_docx_multiline_content(tmp_path: Path):
 
     result = read_docx(str(test_file))
     lines = result.split("\n")
-    # 验证多行内容被正确写入
     assert len(lines) >= 3
-
-
-def test_extract_tables_docx_no_tables(tmp_path: Path):
-    """测试无表格文档。"""
-    test_file = tmp_path / "test.docx"
-    doc = Document()
-    doc.add_paragraph("只有文字")
-    doc.save(test_file)
-
-    result = extract_tables_docx(str(test_file))
-    assert result == []
-
-
-def test_extract_tables_docx_empty_table(tmp_path: Path):
-    """测试空表格。"""
-    test_file = tmp_path / "test.docx"
-    doc = Document()
-    doc.add_table(rows=1, cols=2)
-    doc.save(test_file)
-
-    result = extract_tables_docx(str(test_file))
-    assert len(result) == 1
-    assert "|  |  |" in result[0]
-
-
-def test_extract_tables_docx_file_not_found():
-    """测试文件不存在。"""
-    with pytest.raises(FileNotFoundError, match="文件不存在"):
-        extract_tables_docx("nonexistent.docx")
-
-
-def test_extract_tables_docx_multiple_tables(tmp_path: Path):
-    """测试多表格文档。"""
-    test_file = tmp_path / "test.docx"
-    doc = Document()
-
-    table1 = doc.add_table(rows=2, cols=2)
-    table1.cell(0, 0).text = "A"
-    table1.cell(0, 1).text = "B"
-    table1.cell(1, 0).text = "C"
-    table1.cell(1, 1).text = "D"
-
-    doc.add_paragraph("中间文字")
-
-    table2 = doc.add_table(rows=2, cols=3)
-    table2.cell(0, 0).text = "X"
-    table2.cell(0, 1).text = "Y"
-    table2.cell(0, 2).text = "Z"
-    table2.cell(1, 0).text = "1"
-    table2.cell(1, 1).text = "2"
-    table2.cell(1, 2).text = "3"
-
-    doc.save(test_file)
-
-    result = extract_tables_docx(str(test_file))
-    assert len(result) == 2
-    assert "| A | B |" in result[0]
-    assert "| X | Y | Z |" in result[1]
-
-
-def test_extract_tables_docx_success(tmp_path: Path):
-    """测试成功提取表格。"""
-    test_file = tmp_path / "test.docx"
-    doc = Document()
-    doc.add_paragraph("文档标题")
-    table = doc.add_table(rows=2, cols=2)
-    table.cell(0, 0).text = "姓名"
-    table.cell(0, 1).text = "年龄"
-    table.cell(1, 0).text = "张三"
-    table.cell(1, 1).text = "25"
-    doc.save(test_file)
-
-    result = extract_tables_docx(str(test_file))
-    assert len(result) == 1
-    assert "| 姓名 | 年龄 |" in result[0]
-    assert "| 张三 | 25 |" in result[0]

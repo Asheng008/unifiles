@@ -24,7 +24,14 @@ from .excel import (
 )
 
 # Word 模块
-from .word import read_docx, write_docx
+from .word import (
+    extract_images_docx,
+    extract_tables_docx,
+    extract_text_docx,
+    inspect_docx,
+    read_docx,
+    write_docx,
+)
 
 # TXT 模块
 from .txt import read_txt, write_txt
@@ -55,6 +62,10 @@ __all__ = [
     "get_excel_info",
     "read_docx",
     "write_docx",
+    "extract_images_docx",
+    "extract_tables_docx",
+    "extract_text_docx",
+    "inspect_docx",
     "read_txt",
     "write_txt",
     "read_json",

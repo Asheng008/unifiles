@@ -258,5 +258,6 @@ tests/fixtures/test_files/*.sqlite
 !.git/
 !.github/
 temp/
+**/pics/
 
 .codeartsdoer

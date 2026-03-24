@@ -10,18 +10,30 @@
 
 ## 环境要求（关键）
 
-- **操作系统**: Linux — 仅限 Bash。禁止 Windows 命令（`dir`、`$env:`、`type`）。
-- **Python**: 必须使用 venv 绝对路径。禁止系统 Python。
-  ```bash
-  export PY="/home/wen/pro/unifiles/.venv/bin/python"
-  ```
-- **编码**: UTF-8（默认支持中文，无需额外设置）。
+- **Python**: 必须使用 venv，禁止系统 Python。
+- **编码**: UTF-8（默认支持中文）。
+
+### Linux / macOS
+
+```bash
+source .venv/bin/activate
+# 或
+export PY=".venv/bin/python"
+```
+
+### Windows
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+# 或
+$env:PY = ".venv\Scripts\python.exe"
+```
 
 ## 构建/检查/测试命令
 
-```bash
-source .venv/bin/activate              # 或直接使用 $PY
+> 以下命令跨平台通用，激活 venv 后直接运行。
 
+```bash
 # 格式化
 black --check src/ tests/              # 仅检查
 black src/ tests/                      # 自动修复
@@ -38,10 +50,19 @@ pytest -m "not slow" -v                # 跳过慢速测试
 ```
 
 **提交前 CI 检查**（三项必须全部通过）:
+
 ```bash
+# Linux / macOS
 black --check src/ tests/ || exit 1
 mypy src/unifiles/ || exit 1
 pytest || exit 1
+```
+
+```powershell
+# Windows
+black --check src/ tests/; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+mypy src/unifiles/; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+pytest; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 ```
 
 ## 代码规范
@@ -63,7 +84,7 @@ src/unifiles/
 ├── exceptions.py   # 自定义异常
 ├── excel.py        # pandas + openpyxl
 ├── pdf.py          # pypdf
-├── word.py         # python-docx
+├── word/           # python-docx（包）
 ├── sqlite.py       # sqlite3
 ├── json.py         # json (标准库)
 ├── yaml.py         # PyYAML
@@ -73,7 +94,6 @@ src/unifiles/
 ## 禁止事项
 
 - ❌ 系统 Python 或不使用 venv 的 `pip install`
-- ❌ Bash 中使用 Windows 命令（`dir`、`$env:`、`type`）
 - ❌ 旧式类型注解（`List[str]`、`Union[...]`、`Optional[...]`）
 - ❌ `as any`、`@ts-ignore`、类型错误抑制
 - ❌ 修改函数签名而不更新测试
