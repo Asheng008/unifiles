@@ -6,6 +6,7 @@
 from pathlib import Path
 
 from docx import Document
+from docx.table import Table
 
 from .exceptions import FileReadError, FileWriteError
 
@@ -45,6 +46,66 @@ def read_docx(file_path: str) -> str:
         raise
     except Exception as e:
         raise FileReadError(f"读取 Word 文档失败: {e}") from e
+
+
+def _table_to_markdown(table: Table) -> str:
+    """将 python-docx 表格转换为 Markdown 格式。"""
+    if not table.rows:
+        return ""
+
+    rows_data = []
+    for row in table.rows:
+        row_data = [cell.text.strip() for cell in row.cells]
+        rows_data.append(row_data)
+
+    if not rows_data:
+        return ""
+
+    col_count = max(len(row) for row in rows_data)
+    lines = []
+
+    header = rows_data[0] + [""] * (col_count - len(rows_data[0]))
+    lines.append("| " + " | ".join(header) + " |")
+
+    lines.append("| " + " | ".join(["---"] * col_count) + " |")
+
+    for row in rows_data[1:]:
+        formatted_row = list(row) + [""] * (col_count - len(row))
+        formatted_row = [cell if cell else " " for cell in formatted_row]
+        lines.append("| " + " | ".join(formatted_row) + " |")
+
+    return "\n".join(lines)
+
+
+def extract_tables_docx(file_path: str) -> list[str]:
+    """提取 Word 文档中的所有表格，返回 Markdown 格式列表。
+
+    Args:
+        file_path: Word 文档路径
+
+    Returns:
+        每个表格的 Markdown 文本列表
+
+    Raises:
+        FileNotFoundError: 文件不存在
+        FileReadError: 读取文件时发生错误
+    """
+    path = Path(file_path)
+    if not path.exists():
+        raise FileNotFoundError(f"文件不存在: {file_path}")
+
+    try:
+        document = Document(file_path)
+        tables_markdown: list[str] = []
+        for table in document.tables:
+            md = _table_to_markdown(table)
+            if md:
+                tables_markdown.append(md)
+        return tables_markdown
+    except FileNotFoundError:
+        raise
+    except Exception as e:
+        raise FileReadError(f"提取 Word 表格失败: {e}") from e
 
 
 def write_docx(content: str, file_path: str, title: str | None = None) -> None:

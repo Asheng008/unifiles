@@ -4,7 +4,7 @@ import pytest
 from pathlib import Path
 from docx import Document
 
-from unifiles.word import read_docx, write_docx
+from unifiles.word import read_docx, write_docx, extract_tables_docx
 from unifiles.exceptions import FileReadError, FileWriteError
 
 
@@ -151,3 +151,21 @@ def test_write_docx_multiline_content(tmp_path: Path):
     lines = result.split("\n")
     # 验证多行内容被正确写入
     assert len(lines) >= 3
+
+
+def test_extract_tables_docx_success(tmp_path: Path):
+    """测试成功提取表格。"""
+    test_file = tmp_path / "test.docx"
+    doc = Document()
+    doc.add_paragraph("文档标题")
+    table = doc.add_table(rows=2, cols=2)
+    table.cell(0, 0).text = "姓名"
+    table.cell(0, 1).text = "年龄"
+    table.cell(1, 0).text = "张三"
+    table.cell(1, 1).text = "25"
+    doc.save(test_file)
+
+    result = extract_tables_docx(str(test_file))
+    assert len(result) == 1
+    assert "| 姓名 | 年龄 |" in result[0]
+    assert "| 张三 | 25 |" in result[0]
