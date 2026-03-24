@@ -8,6 +8,31 @@
 
 - （在开发下一个版本时，将改动先记录在这里；发布时再移动到对应版本小节）
 
+## [0.4.0] - 2026-03-24
+
+### Added
+
+- Word 模块新增功能：
+  - `extract_text_docx()` - 提取完整文本，段落和表格按文档顺序输出，表格转为 Markdown 格式
+  - `extract_tables_docx()` - 提取所有表格，支持 `format='md'`（Markdown）和 `format='list'`（二维列表）
+  - `extract_images_docx()` - 提取所有图片，自动保存到指定目录（默认 `./pics/`）
+  - `inspect_docx()` - 综合检查文档元素，返回段落、表格、图片的统计信息
+
+### Changed
+
+- 重构 `word.py` 为 `word/` 包结构，职责分离更清晰：
+  - `word/_table.py` - 表格处理辅助函数（`table_to_list`, `list_to_markdown`）
+  - `word/_legacy.py` - 废弃的 `read_docx` 函数
+  - `word/write.py` - 写入功能
+  - `word/extract.py` - 提取功能
+  - `word/inspect.py` - 检查功能
+- 重构 `tests/test_word.py` 为 `tests/word/` 包结构
+- AGENTS.md 支持 Linux/macOS 和 Windows 双平台
+
+### Deprecated
+
+- `read_docx()` - 已废弃，请使用 `extract_text_docx()` 替代
+
 ## [0.3.1] - 2026-01-30
 
 ### Fixed
