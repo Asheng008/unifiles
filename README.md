@@ -15,7 +15,7 @@
 |------------|-----------------|------------------------------|--------|
 | Excel      | `.xlsx`, `.xls` | 读取、写入、获取工作表名称、获取列名、获取工作表/文件信息 | ✅ 已实现 |
 | PDF        | `.pdf`          | 提取文本、提取表格（基础）   | ✅ 已实现 |
-| Word       | `.docx`         | 读取、写入                    | ✅ 已实现 |
+| Word       | `.docx`         | 读取、写入、提取文本（含表格）、提取表格、提取图片、综合检查 | ✅ 已实现 |
 | SQLite     | `.db`, `.sqlite`| 执行查询、获取表结构、获取表名、获取数据库信息 | ✅ 已实现 |
 
 > **说明**：PDF 表格抽取将基于 `pypdf`，仅适合基础表格；复杂版式、多列、合并单元格等可能不准，后续版本会评估引入 `pdfplumber` 等方案。
@@ -28,6 +28,18 @@
 ## 安装
 
 从源码安装（开发模式，含测试与类型检查等依赖）：
+
+**Linux / macOS：**
+
+```bash
+git clone https://github.com/Asheng008/unifiles.git
+cd unifiles
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -e ".[dev]"
+```
+
+**Windows：**
 
 ```powershell
 git clone https://github.com/Asheng008/unifiles.git
@@ -106,9 +118,27 @@ for table in tables:
 ```python
 import unifiles
 
-# 读取
-content = unifiles.read_docx("document.docx")
-print(content)
+# 提取完整文本（段落 + 表格 Markdown，按文档顺序）
+text = unifiles.extract_text_docx("document.docx")
+print(text)
+
+# 提取所有表格（Markdown 格式）
+tables = unifiles.extract_tables_docx("document.docx")
+for table in tables:
+    print(table)
+
+# 提取所有表格（二维列表格式）
+tables = unifiles.extract_tables_docx("document.docx", format="list")
+print(tables)  # [[['姓名', '年龄'], ['张三', '25']]]
+
+# 提取图片（保存到 ./pics/）
+images = unifiles.extract_images_docx("document.docx")
+for img in images:
+    print(img["filename"], img["path"])
+
+# 综合检查文档元素
+info = unifiles.inspect_docx("document.docx")
+print(info)  # {'paragraphs': [...], 'tables': [...], 'images': [...], ...}
 
 # 写入
 unifiles.write_docx("Hello World", "output.docx", title="My Document")
@@ -160,7 +190,10 @@ from unifiles import (
     get_column_names,
     get_sheet_info,
     get_excel_info,
-    read_docx,
+    extract_text_docx,
+    extract_tables_docx,
+    extract_images_docx,
+    inspect_docx,
     write_docx,
     extract_text,
     extract_tables,
@@ -207,7 +240,13 @@ unifiles/
 │       ├── exceptions.py
 │       ├── excel.py           # ✅ 已实现
 │       ├── pdf.py             # ✅ 已实现
-│       ├── word.py            # ✅ 已实现
+│       ├── word/            # ✅ 已实现（包）
+│       │   ├── __init__.py
+│       │   ├── _table.py    # 表格处理辅助函数
+│       │   ├── _legacy.py   # 废弃的 read_docx
+│       │   ├── write.py     # 写入功能
+│       │   ├── extract.py   # 提取功能
+│       │   └── inspect.py   # 检查功能
 │       └── sqlite.py          # ✅ 已实现
 └── tests/
     ├── __init__.py
@@ -230,7 +269,30 @@ unifiles/
 - **技术文档**：发布流程、CI/CD、版本管理等见 `docs/` 目录
 - **提交前检查**：推送前建议先跑与 CI 一致的本地检查，见 [.cursor/commands/ci-commit-and-push.md](.cursor/commands/ci-commit-and-push.md)
 
-本地开发建议步骤（Windows PowerShell）：
+本地开发建议步骤：
+
+**Linux / macOS：**
+
+```bash
+# 创建并激活虚拟环境
+python3 -m venv .venv
+source .venv/bin/activate
+
+# 安装为可编辑包及开发依赖
+pip install -e ".[dev]"
+
+# 运行测试
+pytest tests/ -v
+
+# 类型检查
+mypy src/unifiles/
+
+# 格式检查与自动格式化
+black --check src/ tests/
+black src/ tests/
+```
+
+**Windows：**
 
 ```powershell
 # 创建并激活虚拟环境
